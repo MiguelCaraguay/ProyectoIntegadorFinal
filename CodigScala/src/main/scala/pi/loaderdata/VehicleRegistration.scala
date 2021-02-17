@@ -135,7 +135,7 @@ object VehicleRegistration extends App {
 
   // CONSULTAS
   // Cuantas camionetas hay en lOJA con relación a su servicio
-  /*val consultaCuatro = registrationQry.
+  val consultaCuatro = registrationQry.
     filter(k => k.classId === getClassIdByName("Camioneta") && k.provinceId === getProvinceIdByName("LOJA")).
     groupBy(_.serviceId).map({ case (service, list) => (service, list.size) })
 
@@ -156,7 +156,7 @@ object VehicleRegistration extends App {
 
   // Consultar numero de vehiculos segun el tipo de marca que no superen los 4 asientos y sean automóviles a gasolina
 
-  val consultaSeis =registrationQry.filter(k => k.asientos === 4 && k.classId === getClassIdByName("Automóvil")
+  val consultaSeis = registrationQry.filter(k => k.asientos === 4 && k.classId === getClassIdByName("Automóvil")
   && k.combustibleId === getCombustibleIdByName("Gasolina")).groupBy(_.marcaId)
     .map({ case (marca, list) => (marca, list.size)})
 

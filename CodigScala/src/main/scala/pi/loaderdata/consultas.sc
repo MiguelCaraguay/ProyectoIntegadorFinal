@@ -45,11 +45,14 @@ val  consultaDos = values.map(_.servicio).groupBy(identity)
   .map({case (servicio, lista) => (servicio, lista.length)}).toSeq.sorted
 consultaDos.foreach(print)
 
-// 3. Cual es la distribucion (el numero)  de los vehiculos segun la clase de vehiculo.
+// 5. Cual es la distribucion general y por provincia (el numero) de los tipos de servicios para
+// vehiculos que pueden considerarse de trabajo pesado (Camion, tanquero, trailer y volqueta)
 
-val  consultaTres = values.map(_.clase).groupBy(identity)
-  .map({case (clase, lista) => (clase, lista.length)}).toSeq.sorted
-consultaTres.foreach(print)
+val  consultaTres = values.filter(row => row.clase.endsWith("n") || row.clase == "Tanquero" ||
+  row.clase == "Trailer" || row.clase == "Volqueta").groupBy(row => (row.servicio, row.clase,row.provincia))
+  .map({case ((servicio, clase, provincia), lista) => (servicio, clase, provincia, lista.length)})
+
+
 
 
 // Creacion de los Archivos
@@ -65,8 +68,9 @@ new File("C:\\Users\\Usuario iTC\\OneDrive\\Documentos\\consultaDos.csv")
     consultaDos.map(row => (row._1, row._2)), rfc.withHeader("Servicio", "Total"))
 
 // Creacion del archivo de la tercera consulta
-new File("C:\\Users\\Usuario iTC\\OneDrive\\Documentos\\consultaTres.csv")
-  .writeCsv[(String,Int)](
-    consultaTres.map(row => (row._1, row._2)), rfc.withHeader("Clase", "Total"))
+new File("C:\\Users\\mateo\\OneDrive\\Documentos\\consultaCincoParteDos.csv")
+  .writeCsv[(String,String,String,Int)](
+    consultaTres.map(row => (row._1, row._2, row._3, row._4)), rfc.withHeader("Servicio", "Clase", "Provincia", "Total"))
+
 
 
