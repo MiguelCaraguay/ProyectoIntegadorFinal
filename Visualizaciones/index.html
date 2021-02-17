@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+    <link href="estilo.css"
+    rel="stylesheet" type="text/css">
+    <title>DataViz - Proyecto Programaci&oacute;n Funcional y Reactiva</title>
+
+    <style media="screen">
+        /* Add space between Vega-Embed links  */
+        .vega-actions a {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="encabezado">
+    <h1>Visualizaciones de Vega Lite </h1>
+    <div class="texto_encabezado">
+        <p>Las presentes visualizaciones responden a las consultas hechas
+            para obtener una mejor representación de las consultas hechas en Scala
+        </p>
+    </div>
+
+</div>
+
+<!-- Container for the visualization -->
+<div class="padre_divs">
+    <h1>Consutla Uno</h1> 
+    <h2>¿Cuál es la distribución (el número) de los vehículos clasificados según el tipo de combustible que usan?</h2>
+    <div id="vis1"></div>
+    <p>En el siguiente grafico de barras podemos observar la distribución total de vehículos de acuerdo al tipo de combustible que usan</p>
+
+    <h1>Consulta Dos</h1>
+    <h2>¿Cuál es la distribución (el numero) de los vehículos según el servicio que presentan?</h2>
+    <div id="vis2"></div>
+    <p>Se observa mediante una grafica de areas, la distribución de los vehiculos segun el servicio que presentan</p>
+
+    <h1>Consulta Tres</h1>
+    <h2>¿Cuál es la distribución por provincia (el número) de los tipos de servicios para vehículos que pueden considerarse de trabajo pesado (Camión, tanquero, tráiler y volqueta)</h2>
+    <div id="vis3"></div>
+    <p>mediante una grafica de barras, la distribución de los vehiculos segun el servicio que presentan,  y distribuidos por provincia</p>
+
+    <h1>Consulta Cuatro</h1>
+    <h2>¿Cuántas camionetas hay en LOJA con relación a su servicio?</h2>
+    <div id="vis4"></div>
+    <p>En el siguiente grafico de areas podemos observar la distribución de camionetas que hay en Loja con respecto al servicio que estas utilizan.</p>
+
+    <h1>Consulta Cinco</h1>
+    <h2>¿Cuántos vehículos son a gasolina y son de marca TOYOTA, con respecto a la provincia?</h2>
+    <div id="vis5"></div>
+    <p>En la grafica se muestra el número de automoviles a gasolina de la marca Toyota correpondientes a cada provincia</p>
+
+    <h1>Consulta Seis</h1>
+    <h2>Consultar número de vehículos según el tipo de marca que no superen los 4 asientos y sean automóviles a gasolina</h2>
+    <div id="vis6"></div>
+    <p>En la grafica se muestra el número de automoviles a gasolina de que no superen los 4 asientos.</p>
+
+</div>
+
+
+<script>
+   
+    const consultaUno = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+        data: {
+            "url": "data/consultaUno.csv"
+        },
+        "width": 500,
+        "height": 500,
+        mark: 'bar',
+        encoding: {
+            x: {
+                field: 'Combustible',
+                type: 'nominal'},
+            y: {
+                field: 'Nro Total',
+                type: 'quantitative',
+                scale: {type: 'symlog'}
+            },
+        }
+    };
+    vegaEmbed('#vis1', consultaUno);
+
+
+    const consultaDos = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+        data: {
+            "url": "data/consultasDos.csv"
+        },
+        "width": 500,
+        "height": 500,
+        mark: {type: 'area', color: '#7c8500'},
+        encoding: {
+            x: {
+                field: 'Servicio',
+                type: 'nominal'},
+            y: {
+                field: 'Total',
+                type: 'quantitative',
+                scale: {type: 'log'}
+            },
+        }
+    };
+   
+    vegaEmbed('#vis2', consultaDos);
+
+     const consultaTres = {
+      
+        $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+        data: {
+            "url": 'data/ConsultaTres.csv'
+        },
+        mark: 'bar',
+        encoding: {
+            column: {"field": 'Provincia', "type": 'nominal'},
+            y: {"field": 'Total', "type": 'quantitative', "agregate": 'Suma',scale: {type: 'symlog'}},
+            x: {"field": 'Servicio', "type": 'nominal'},
+            color: {"field": 'Clase', "type": 'nominal'}
+        }
+        
+    };
+
+    vegaEmbed('#vis3', consultaTres);
+
+    const consultaCuatro = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+        data: {
+            'url': 'data/ConsultaCuatro.csv'
+        },
+        'width': 500,
+        'height': 500,
+        layer:[
+            {mark:{type: 'arc', innerRadius: 100, stroke: 'black'}}, //inner radius es el radio del circulo de adentro
+            {mark: {type:'text', radiusOffset: 20}, //radiusOffser es para el radio de los nombres
+            encoding: {text: {field: 'Total', type: 'quantitative'}}
+            }
+        ],
+        encoding: {
+            theta: {field: 'Total', type: 'quantitative', stack: true},
+            radius: {
+                field: 'Total',
+                scale: {type: 'sqrt', zero: true, rangeMin:240,domain: {unionWith: [0, 5]}}                
+            },
+            color: {field: 'Service', type: 'nominal'}
+        },
+        view: {stroke: null}
+
+    };
+    vegaEmbed('#vis4', consultaCuatro);
+
+
+     const consultaCinco = {
+        data: {
+            'url': 'data/ConsultaCinco.csv'
+        },
+        'width': 500,
+        'height': 500,
+        encoding: {
+            theta: {field: 'Total', type: 'quantitative', stack: true},
+            color: {field: 'Province', type: 'nominal'}
+        },
+        layer: [{
+            mark: {type: "arc", outerRadius: 200, innerRadius: 50}
+        }, 
+        {
+            mark: {type: 'text', radius: 220},
+            encoding: {text: {field: 'Total', "type": 'quantitative'}
+             }
+        }],
+    "view": {"stroke": null}
+    };
+
+    vegaEmbed('#vis5', consultaCinco);
+
+     const consultaSeis = {
+         $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
+        data: {
+            'url': 'data/consultaSeis.csv'
+        },
+        'width': 500,
+        'height': 500,
+        layer:[
+            {mark:{type: 'arc', innerRadius: 20, stroke: 'blue'}}, //inner radius es el radio del circulo de adentro
+            {mark: {type:'text', radiusOffset: 20}, //radiusOffser es para el radio de los nombres
+            encoding: {text: {field: 'Total', type: 'quantitative'}}
+            }
+        ],
+        encoding: {
+            theta: {field: 'Total', type: 'quantitative', stack: true},
+            radius: {
+                field: 'Total',
+                scale: {type: 'sqrt', zero: true, rangeMin:240,domain: {unionWith: [0, 5]}}                
+            },
+            color: {field: 'Marca', type: 'nominal'}
+        },
+        view: {stroke: null}
+    };
+    vegaEmbed('#vis6', consultaSeis);
+
+    
+</script>
+</body>
+</html>
